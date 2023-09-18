@@ -6,7 +6,7 @@ Installation script for minikube on the raspberry platform
 * hardware - Raspberry Pi 4 Model B
 * software - Ubuntu 22.04
 ### Usage
-Run the script not as the root user
+Run the script as a non-root user on the target machine
 ```ShellSession
 sudo apt install git -y
 git clone git@github.com:Moonlightcrash/home-lab.git
