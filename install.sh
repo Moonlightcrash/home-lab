@@ -18,9 +18,9 @@ sudo apt purge dphys-swapfile -y
 echo "----------INSTALL DOCKER----------"
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh -y
-sudo usermod -aG docker $USER && newgrp docker
+usermod -aG docker $USER && newgrp docker
 sudo systemctl daemon-reload && sudo systemctl enable docker && sudo systemctl restart docker
-sudo apt install docker-compose
+#sudo apt install docker-compose -y
 
 echo "----------INSTALL MINIKUBE----------"
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-arm64
@@ -31,10 +31,12 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 sudo apt install bash-completion
 echo 'source <(kubectl completion bash)' >>~/.bashrc
+echo 'source <(minikube completion bash)' >>~/.bashrc
 
 echo "----------CREATE MINIKUBE DAEMON----------"
 sudo touch /etc/systemd/system/minikube.service
-sudo echo "[Unit]\nDescription=Runs minikube on startup\nAfter=docker.service\n[Service]\nExecStart=/usr/local/bin/minikube start\nExecStop=/usr/local/bin/minikube stop\nType=oneshot\nRemainAfterExit=yes\nUser=$USER\n[Install]\nWantedBy=multi-user.target" > /etc/systemd/system/minikube.service
+sudo chmod 777 /etc/systemd/system/minikube.service
+sudo printf "[Unit]\nDescription=Runs minikube on startup\nAfter=docker.service\n[Service]\nExecStart=/usr/local/bin/minikube start\nExecStop=/usr/local/bin/minikube stop\nType=oneshot\nRemainAfterExit=yes\nUser=$USER\n[Install]\nWantedBy=multi-user.target" > /etc/systemd/system/minikube.service
 sudo systemctl daemon-reload 
 sudo service minikube start
 sudo systemctl enable minikube
